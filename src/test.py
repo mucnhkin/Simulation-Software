@@ -23,7 +23,7 @@ with rasterio.open(tif_path) as dataset:
     print(bounds)
 
 # Quick visualization
-plt.imshow(bathy_data, cmap="Blues_r")
+plt.imshow(bathy_data)
 plt.colorbar(label="Depth (meters)")
 plt.title("NOAA Bathymetry")
 plt.show()
