@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Path to your downloaded GeoTIFF
-tif_path = "data/test/test.tiff"
+tif_path = "Simulation-Software/data/TIFF/pearl_harbor.tiff"
 
 # Open the dataset
 with rasterio.open(tif_path) as dataset:
@@ -18,7 +18,7 @@ print("Shape:", bathy_data.shape)
 print("CRS:", profile['crs'])
 print("Resolution:", profile['transform'][0], "meters per pixel")
 
-with rasterio.open("data/test/test.tiff") as dataset:
+with rasterio.open(tif_path) as dataset:
     bounds = dataset.bounds
     print(bounds)
 

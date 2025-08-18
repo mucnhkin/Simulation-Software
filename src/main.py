@@ -3,9 +3,9 @@ import math
 pygame.init()
 
 # Load both images
-background = pygame.image.load("data/test/Harbor1.png")
-depth_map = pygame.image.load("data/test/Harbor1_DepthMap.png")
-icon = pygame.image.load("data/test/icon.png")
+background = pygame.image.load("Simulation-Software/data/test/Harbor1.png")
+depth_map = pygame.image.load("Simulation-Software/data/test/Harbor1_DepthMap.png")
+icon = pygame.image.load("Simulation-Software/data/test/icon.png")
 
 screen = pygame.display.set_mode((737, 535))
 width, height = screen.get_size()
