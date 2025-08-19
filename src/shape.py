@@ -1,10 +1,6 @@
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import matplotlib.tri as mtri
 from shapely.geometry import Point
-
-import pandas as pd
-import numpy as np
 
 
 
