@@ -32,17 +32,17 @@ shp = gpd.read_file(shape_path)
 # ax.set_facecolor("Green")
 
 # matplot graphs
-fig = Figure(figsize=(5,4), dpi=100, facecolor='green')
+fig = Figure(figsize=(7,7), dpi=100, facecolor='white')
 
 ax = fig.add_subplot()
 shp.plot(ax=ax, column="DRVAL1", cmap="Blues", legend=True)
 
 canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
 canvas.draw()
-toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
+toolbar = NavigationToolbar2Tk(canvas, canvas_frame, pack_toolbar=False, )
 toolbar.update()
 
-canvas.mpl_connect("key_press_event", lambda event: print(f"you pressed {event.key}"))
+canvas.mpl_connect("key_press_event", lambda event: print(f"you pressed quit {event.key}"))
 canvas.mpl_connect("key_press_event", key_press_handler)
 
 button_quit = tk.Button(master=root, text="Quit", command=root.destroy)
@@ -69,8 +69,8 @@ def update_frequency(event):
     # canvas.draw()
 
 # slider_update = tk.Scale(root, from_=1, to=5, orient=tk.HORIZONTAL, command=update_frequency, label="Frequency [Hz]")
-fig.canvas.mpl_connect('motion_notify_event', update_frequency)
 button_quit.pack(side=tk.BOTTOM)
+fig.canvas.mpl_connect('motion_notify_event', update_frequency)
 # slider_update.pack(side=tk.BOTTOM)
 toolbar.pack(side=tk.BOTTOM, fill=tk.X)
 canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
