@@ -53,9 +53,13 @@ scale = min(x_scale, y_scale)
 x_offset = (canvas_width - geo_width * scale) / 2
 y_offset = (canvas_height - geo_height * scale) / 2
 
+polygon_ids={}
+
 for index, row in shp.iterrows():
     # Get the geometry from the current row
     geometry = row['geometry']
+    depth1 = row["DRVAL1"]
+    depth2 = row["DRVAL2"]
     
     # Check if the geometry is a Polygon (or MultiPolygon)
     if geometry.geom_type == 'Polygon':
@@ -71,8 +75,8 @@ for index, row in shp.iterrows():
             scaled_coords.extend([new_x, new_y])
 
         # Draw the scaled polygon on the canvas
-        canvas.create_polygon(scaled_coords, fill='blue', outline='red', width=2)
-
+        id=canvas.create_polygon(scaled_coords, fill='blue', outline='red', width=0)
+        polygon_ids[id]={"depth1": depth1, "depth2": depth2}
 
 canvas.lift(oval)
 canvas.lift(oval2)        
@@ -117,6 +121,36 @@ root.bind("<a>", left2)
 root.bind("<d>", right2)
 root.bind("<w>", up2)
 root.bind("<s>", down2)
+
+selected_polygon_id = None
+def on_canvas_click(event):
+    global selected_polygon_id
+
+    # Find the closest item to the click event coordinates
+    # find_closest returns a tuple of IDs, so we get the first element
+    closest_items = canvas.find_closest(event.x, event.y) 
+
+    if closest_items:  # Check if any item was found
+        clicked_item_id = closest_items[0]
+
+        # If a polygon was previously selected, restore its original color
+        if selected_polygon_id:
+            canvas.itemconfigure(selected_polygon_id, outline="black")
+
+        # Check if the clicked item is a polygon (optional, you can use tags here if desired)
+        # For simplicity, we are assuming all canvas items are polygons in this example
+        
+        # Highlight the clicked polygon
+        canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="black")
+        selected_polygon_id = clicked_item_id  # Update the selected polygon
+        print(f"Clicked on polygon with ID: {clicked_item_id}")
+        print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
+
+# Bind the left mouse button click event to the canvas
+canvas.bind("<Button-1>", on_canvas_click)
+
+
+
 # fig, ax = plt.subplots(figsize=(6,6))
 # # ax.set_facecolor("Green")
 
