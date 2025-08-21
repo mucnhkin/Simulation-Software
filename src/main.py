@@ -8,6 +8,32 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle
 
+selected_polygon_id = None
+def depth_loc(x, y):
+    global selected_polygon_id
+
+
+    # Find the closest item to the click event coordinates
+    # find_closest returns a tuple of IDs, so we get the first element
+    closest_items = canvas.find_closest(x, y) 
+
+    if closest_items:  # Check if any item was found
+        clicked_item_id = closest_items[0]
+
+        # If a polygon was previously selected, restore its original color
+        if selected_polygon_id:
+            canvas.itemconfigure(selected_polygon_id, outline="black", fill='blue')
+
+        # Check if the clicked item is a polygon (optional, you can use tags here if desired)
+        # For simplicity, we are assuming all canvas items are polygons in this example
+        
+        # Highlight the clicked polygon
+        canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="red")
+        selected_polygon_id = clicked_item_id  # Update the selected polygon
+        print(f"Clicked on polygon with ID: {clicked_item_id}")
+        print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
+
+
 
 # setup intial window
 root = tk.Tk()
@@ -27,14 +53,12 @@ canvas_frame.pack(side='top',  padx=5, pady=5)
 
 x = 0
 y = 0
-x2 = 0
-y2 = 0
+global_x = 0
+global_y = 0
 canvas_width = 700
 canvas_height = 700
 canvas = tk.Canvas(background='white', master=canvas_frame, width=canvas_width, height=canvas_height)
-oval = canvas.create_oval(x, y, x+50, y+50, fill='black')
-oval2 = canvas.create_oval(x2, y2, x2+50, y2+50, fill='black')
-
+oval = canvas.create_oval(x, y, x+5, y+5, fill='black')
 canvas.pack()
 
 shape_path = "C:/Users/gtcdu/Downloads/extractedData_harbour_arcmap (1)/zipfolder/Harbour_Depth_Area.shp"
@@ -79,75 +103,74 @@ for index, row in shp.iterrows():
         polygon_ids[id]={"depth1": depth1, "depth2": depth2}
 
 canvas.lift(oval)
-canvas.lift(oval2)        
 def left(event):
     x=-10
+    global global_x
+    global_x += x 
+    print(f"({global_x}, {global_y})")
+    if(global_x<0):
+        global_x=0
     canvas.move(oval, x, y)
+    depth_loc(global_x, global_y)
 
 def right(event):
     x=10
+    global global_x
+    global_x += x 
+    print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
+    depth_loc(global_x, global_y)
 
 def up(event):
     y=-10
+    global global_y
+    global_y += y
+    print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
+    depth_loc(global_x, global_y)
     
 def down(event):
     y=10
+    global global_y
+    global_y += y
+    print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
-
-def left2(event):
-    x2=-10
-    canvas.move(oval2, x2, y2)
-
-def right2(event):
-    x2=10
-    canvas.move(oval2, x2, y2)
-
-def up2(event):
-    y2=-10
-    canvas.move(oval2, x2, y2)
-    
-def down2(event):
-    y2=10
-    canvas.move(oval2, x2, y2)
+    depth_loc(global_x, global_y)
 
 root.bind("<Left>", left)
 root.bind("<Right>", right)
 root.bind("<Up>", up)
 root.bind("<Down>", down)
 
-root.bind("<a>", left2)
-root.bind("<d>", right2)
-root.bind("<w>", up2)
-root.bind("<s>", down2)
+# selected_polygon_id = None
+# def on_canvas_click(event):
+#     global selected_polygon_id
+#     global global_y
+#     global global_x
 
-selected_polygon_id = None
-def on_canvas_click(event):
-    global selected_polygon_id
+#     # Find the closest item to the click event coordinates
+#     # find_closest returns a tuple of IDs, so we get the first element
+#     closest_items = canvas.find_closest(global_x, global_y) 
+#     print(event.x, event.y)
 
-    # Find the closest item to the click event coordinates
-    # find_closest returns a tuple of IDs, so we get the first element
-    closest_items = canvas.find_closest(event.x, event.y) 
+#     if closest_items:  # Check if any item was found
+#         clicked_item_id = closest_items[0]
 
-    if closest_items:  # Check if any item was found
-        clicked_item_id = closest_items[0]
+#         # If a polygon was previously selected, restore its original color
+#         if selected_polygon_id:
+#             canvas.itemconfigure(selected_polygon_id, outline="black")
 
-        # If a polygon was previously selected, restore its original color
-        if selected_polygon_id:
-            canvas.itemconfigure(selected_polygon_id, outline="black")
-
-        # Check if the clicked item is a polygon (optional, you can use tags here if desired)
-        # For simplicity, we are assuming all canvas items are polygons in this example
+#         # Check if the clicked item is a polygon (optional, you can use tags here if desired)
+#         # For simplicity, we are assuming all canvas items are polygons in this example
         
-        # Highlight the clicked polygon
-        canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="black")
-        selected_polygon_id = clicked_item_id  # Update the selected polygon
-        print(f"Clicked on polygon with ID: {clicked_item_id}")
-        print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
+#         # Highlight the clicked polygon
+#         canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="black")
+#         selected_polygon_id = clicked_item_id  # Update the selected polygon
+#         print(f"Clicked on polygon with ID: {clicked_item_id}")
+#         print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
 
 # Bind the left mouse button click event to the canvas
-canvas.bind("<Button-1>", on_canvas_click)
+# canvas.bind("<Button-1>", on_canvas_click)
 
 
 
