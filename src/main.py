@@ -4,68 +4,17 @@ import pandas as pd
 import mesa
 import geopandas as gpd
 from shapely.geometry import Point, shape
-from matplotlib.backend_bases import key_press_handler
+from agents.model import UUVModel
+import os
+
+
+# For navigating the project
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(CURRENT_PATH)
 
 
 polygon_ids={}
 selected_polygon_id = None
-
-#putting classes in one file for quick testing
-class UUVAgent(mesa.Agent):
-    """UUV agent testing class"""
-
-    def __init__(self, model, canvas, *args, **kwargs):
-        super().__init__(model, *args, **kwargs)
-        self.position = Point(0, 0)
-        self.canvas = canvas
-        self.target = Point(25, 25)
-        self.oval = self.canvas.create_oval(self.position.x,self.position.y, self.position.x+20, self.position.y+20, fill='orange', tags='agent')
-        self.canvas.lift(self.oval)
-    
-    def move_to_target(self):
-        """simple move towards target set function"""
-        
-        if self.position != self.target:  
-            new_x = self.position.x
-            new_y = self.position.y  
-            if self.position.x > self.target.x:
-                new_x -= 1
-            elif self.position.x < self.target.x:
-                new_x += 1
-
-            if self.position.y > self.target.y:
-                new_y -= 1
-            elif self.position.y < self.target.y:
-                new_y += 1
-            self.position = Point(new_x, new_y)
-            self.canvas.move(self.oval, new_x, new_y)
-    
-        
-        print(f'{self.position}')
-
-
-class UUVModel(mesa.Model):
-    """UUV model testing class"""
-    
-    def __init__(self, n, canvas,*args, seed = None, rng = None, **kwargs):
-        super().__init__(*args, seed=seed, rng=rng, **kwargs)
-        self.num_agents = n
-        self.canvas = canvas
-        UUVAgent.create_agents(model=self, n=n, canvas=self.canvas)
-
-    def step(self):
-        """advance model by one step"""
-        self.agents.do("move_to_target")
-
-
-
-
-
-
-
-
-
-
 
 def depth_loc(x, y):
     global selected_polygon_id

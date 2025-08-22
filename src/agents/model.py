@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import mesa
 
-import 
+from . import agent
 
 class UUVModel(mesa.Model):
     """UUV model testing class"""
@@ -12,7 +12,7 @@ class UUVModel(mesa.Model):
         super().__init__(*args, seed=seed, rng=rng, **kwargs)
         self.num_agents = n
         self.canvas = canvas
-        UUVAgent.create_agents(model=self, n=n, canvas=self.canvas)
+        agent.UUVAgent.create_agents(model=self, n=n, canvas=self.canvas)
 
     def step(self):
         """advance model by one step"""
