@@ -7,32 +7,57 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle
-
+polygon_ids={}
 selected_polygon_id = None
 def depth_loc(x, y):
     global selected_polygon_id
 
+    closest_items = canvas.find_closest(x+5, y+5) 
 
-    # Find the closest item to the click event coordinates
-    # find_closest returns a tuple of IDs, so we get the first element
-    closest_items = canvas.find_closest(x, y) 
-
-    if closest_items:  # Check if any item was found
+    # if closet item was found
+    if closest_items:
         clicked_item_id = closest_items[0]
 
-        # If a polygon was previously selected, restore its original color
-        if selected_polygon_id:
-            canvas.itemconfigure(selected_polygon_id, outline="black", fill='blue')
+        if clicked_item_id in polygon_ids:
 
-        # Check if the clicked item is a polygon (optional, you can use tags here if desired)
-        # For simplicity, we are assuming all canvas items are polygons in this example
-        
-        # Highlight the clicked polygon
-        canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="red")
-        selected_polygon_id = clicked_item_id  # Update the selected polygon
-        print(f"Clicked on polygon with ID: {clicked_item_id}")
-        print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
+            
+            # If a polygon was previously selected, restore its original color
+            if selected_polygon_id and selected_polygon_id in polygon_ids:
+                original_color = polygon_ids[selected_polygon_id]['color']
+                canvas.itemconfigure(selected_polygon_id, fill=original_color)
 
+            # Highlight
+            canvas.itemconfigure(clicked_item_id, width=0, fill="red")
+            selected_polygon_id = clicked_item_id
+            
+            # Print information
+            print(f"Clicked on polygon with ID: {clicked_item_id}")
+            print(f"Depth: {polygon_ids[clicked_item_id]['depth1']}, {polygon_ids[clicked_item_id]['depth2']}")
+
+
+
+
+# max color values
+shallow_color = (170, 201, 250)
+deep_color = (0, 0, 26)
+
+def get_depth_color(current_depth, min_d, max_d):
+    """
+    Calculates a color in a gradient from light-blue to dark blue.
+    """
+    # normilize values, 0 for light, 1 for dark
+    if max_d == min_d:
+        normalized_depth = 0
+    else:
+        normalized_depth = (current_depth - min_d) / (max_d - min_d)
+    
+    # change the base rgb values
+    r = int(shallow_color[0] + normalized_depth * (deep_color[0] - shallow_color[0]))
+    g = int(shallow_color[1] + normalized_depth * (deep_color[1] - shallow_color[1]))
+    b = int(shallow_color[2] + normalized_depth * (deep_color[2] - shallow_color[2]))
+
+    # Convert the RGB to hex
+    return f'#{r:02x}{g:02x}{b:02x}'
 
 
 # setup intial window
@@ -57,13 +82,15 @@ global_x = 0
 global_y = 0
 canvas_width = 700
 canvas_height = 700
-canvas = tk.Canvas(background='white', master=canvas_frame, width=canvas_width, height=canvas_height)
-oval = canvas.create_oval(x, y, x+5, y+5, fill='black')
+canvas = tk.Canvas(background="#011500", master=canvas_frame, width=canvas_width, height=canvas_height)
+oval = canvas.create_oval(x, y, x+5, y+5, fill='black', tags='agent')
+
 canvas.pack()
 
 shape_path = "C:/Users/gtcdu/Downloads/extractedData_harbour_arcmap (1)/zipfolder/Harbour_Depth_Area.shp"
 shp = gpd.read_file(shape_path)
 minx, miny, maxx, maxy = shp.total_bounds
+
 # Calculate the geographic width and height
 geo_width = maxx - minx
 geo_height = maxy - miny
@@ -77,149 +104,94 @@ scale = min(x_scale, y_scale)
 x_offset = (canvas_width - geo_width * scale) / 2
 y_offset = (canvas_height - geo_height * scale) / 2
 
-polygon_ids={}
+
+
+# min depth = light blue, max depth = dark blue
+min_depth = shp['DRVAL2'].min()
+max_depth = shp['DRVAL2'].max()
 
 for index, row in shp.iterrows():
+
     # Get the geometry from the current row
     geometry = row['geometry']
     depth1 = row["DRVAL1"]
     depth2 = row["DRVAL2"]
     
-    # Check if the geometry is a Polygon (or MultiPolygon)
+    # Check if the geometry is a Polygon
     if geometry.geom_type == 'Polygon':
-        # Get the exterior coordinates as a list of tuples
+
+        # Get the exterior coordinates
         exterior_coords = list(geometry.exterior.coords)
         
-         # Apply scaling and offsetting to each coordinate
+        # Apply scaling to each coordinate(so can control the size)
         scaled_coords = []
         for x_geo, y_geo  in exterior_coords:
-            # Scale and offset the x and y coordinates
-            new_x = (x_geo - minx) * scale #+ x_offset
-            new_y = (maxy - y_geo) * scale# + y_offset
+            # Scale
+            new_x = (x_geo - minx) * scale
+            new_y = (maxy - y_geo) * scale
             scaled_coords.extend([new_x, new_y])
+            
 
-        # Draw the scaled polygon on the canvas
-        id=canvas.create_polygon(scaled_coords, fill='blue', outline='red', width=0)
-        polygon_ids[id]={"depth1": depth1, "depth2": depth2}
+        # get depth color
+        fill_color = get_depth_color(depth2, min_depth, max_depth)
+
+        # Draw the scaled polygon on the canvas and store in dictinary
+        id=canvas.create_polygon(scaled_coords, fill=fill_color, width=0, tags="map")
+        polygon_ids[id]={"depth1": depth1, "depth2": depth2, "color": fill_color}
+
+
 
 canvas.lift(oval)
+prev_x =0
+prev_y = 0
 def left(event):
     x=-10
     global global_x
+    global prev_x
     global_x += x 
     print(f"({global_x}, {global_y})")
-    if(global_x<0):
-        global_x=0
     canvas.move(oval, x, y)
+    canvas.create_line(prev_x, prev_y, global_x, global_y, fill="orange", width=2, dash=(3, 3))
     depth_loc(global_x, global_y)
+    prev_x = global_x
+
 
 def right(event):
     x=10
     global global_x
+    global prev_x
     global_x += x 
     print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
+    canvas.create_line(prev_x, prev_y, global_x, global_y, fill="orange", width=2, dash=(3, 3))
     depth_loc(global_x, global_y)
+    prev_x = global_x
 
 def up(event):
     y=-10
     global global_y
+    global prev_y
     global_y += y
     print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
+    canvas.create_line(prev_x, prev_y, global_x, global_y, fill="orange", width=2, dash=(3, 3))
     depth_loc(global_x, global_y)
+    prev_y = global_y
     
 def down(event):
     y=10
     global global_y
+    global prev_y
     global_y += y
     print(f"({global_x}, {global_y})")
     canvas.move(oval, x, y)
+    canvas.create_line(prev_x, prev_y, global_x, global_y, fill="orange", width=2, dash=(3, 3))
     depth_loc(global_x, global_y)
+    prev_y = global_y
 
 root.bind("<Left>", left)
 root.bind("<Right>", right)
 root.bind("<Up>", up)
 root.bind("<Down>", down)
-
-# selected_polygon_id = None
-# def on_canvas_click(event):
-#     global selected_polygon_id
-#     global global_y
-#     global global_x
-
-#     # Find the closest item to the click event coordinates
-#     # find_closest returns a tuple of IDs, so we get the first element
-#     closest_items = canvas.find_closest(global_x, global_y) 
-#     print(event.x, event.y)
-
-#     if closest_items:  # Check if any item was found
-#         clicked_item_id = closest_items[0]
-
-#         # If a polygon was previously selected, restore its original color
-#         if selected_polygon_id:
-#             canvas.itemconfigure(selected_polygon_id, outline="black")
-
-#         # Check if the clicked item is a polygon (optional, you can use tags here if desired)
-#         # For simplicity, we are assuming all canvas items are polygons in this example
-        
-#         # Highlight the clicked polygon
-#         canvas.itemconfigure(clicked_item_id, outline="purple", width=1, fill="black")
-#         selected_polygon_id = clicked_item_id  # Update the selected polygon
-#         print(f"Clicked on polygon with ID: {clicked_item_id}")
-#         print(f"Depth: {polygon_ids[clicked_item_id]['depth1']},{polygon_ids[clicked_item_id]['depth2']}")
-
-# Bind the left mouse button click event to the canvas
-# canvas.bind("<Button-1>", on_canvas_click)
-
-
-
-# fig, ax = plt.subplots(figsize=(6,6))
-# # ax.set_facecolor("Green")
-
-# # matplot graphs
-# fig = Figure(figsize=(7,7), dpi=100, facecolor='white')
-
-# ax = fig.add_subplot()
-# shp.plot(ax=ax, column="DRVAL1", cmap="Blues", legend=True)
-
-# canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
-# canvas.draw()
-# toolbar = NavigationToolbar2Tk(canvas, canvas_frame, pack_toolbar=False, )
-# toolbar.update()
-
-# canvas.mpl_connect("key_press_event", lambda event: print(f"you pressed quit {event.key}"))
-# canvas.mpl_connect("key_press_event", key_press_handler)
-
-# button_quit = tk.Button(master=root, text="Quit", command=root.destroy)
-
-# def update_frequency(event):
-#     # check if in plot
-#     if event.inaxes:
-#     # Get the mouse coordinates in data space
-#         x, y = event.xdata, event.ydata
-#         mouse_point = Point(x, y)
-
-#         # Iterate through each row (polygon) in the GeoDataFrame
-#         for x ,row in shp.iterrows():
-#             #  Check if the mouse point is within the current polygon
-#             if row.geometry.contains(mouse_point):
-#                 # If it is, get the depth value
-#                 depth = row['DRVAL1']
-#                 # Display the coordinates and depth on the status bar
-#                 # ax.format_coord = lambda x, y: f'Lat: {event.ydata:.4f}, Lon: {event.xdata:.4f}, Depth: {depth:.2f}m'
-#                 print(f'Lat: {event.ydata:.4f}, Lon: {event.xdata:.4f}, Depth: {depth:.2f}m')
-#                 return # Exit the function once we find a match
-    
-#         ax.format_coord = lambda x, y: f'Lat: {event.ydata:.4f}, Lon: {event.xdata:.4f}'
-#     # required to update canvas and attached toolbar!
-#     canvas.draw()
-
-# # slider_update = tk.Scale(root, from_=1, to=5, orient=tk.HORIZONTAL, command=update_frequency, label="Frequency [Hz]")
-# button_quit.pack(side=tk.BOTTOM)
-# fig.canvas.mpl_connect('motion_notify_event', update_frequency)
-# # slider_update.pack(side=tk.BOTTOM)
-# toolbar.pack(side=tk.BOTTOM, fill=tk.X)
-# canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 root.mainloop()
