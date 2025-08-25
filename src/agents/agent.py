@@ -12,31 +12,34 @@ from shapely.geometry import Point, shape
 class UUVAgent(mesa.Agent):
     """UUV agent testing class"""
 
-    def __init__(self, model, canvas, *args, **kwargs):
+    def __init__(self, model, spawn, target, canvas, *args, **kwargs):
         super().__init__(model, *args, **kwargs)
-        self.position = Point(0, 0)
+        self.position = spawn #(x,y)
+        self.target = target
         self.canvas = canvas
-        self.target = Point(25, 25)
-        self.oval = self.canvas.create_oval(self.position.x,self.position.y, self.position.x+20, self.position.y+20, fill='orange', tags='agent')
+        self.oval = self.canvas.create_oval(self.position[0],self.position[1], self.position[0]+10, self.position[1]+10, fill='orange', tags='agent')
         self.canvas.lift(self.oval)
+        self.getTargetDir()
     
+    def getTargetDir(self):
+        new_x = self.target[0] - self.position[0]
+        new_y = self.target[1] - self.position[1]
+        new_vector = np.array([new_x, new_y])
+        magnitude = np.linalg.norm(new_vector)
+        unit_vector =0
+        if(magnitude == 0):
+            unit_vector = 0
+        else:
+            unit_vector = new_vector / magnitude
+        return unit_vector
+        
+
+
     def move_to_target(self):
         """simple move towards target set function"""
-        
-        if self.position != self.target:  
-            new_x = self.position.x
-            new_y = self.position.y  
-            if self.position.x > self.target.x:
-                new_x -= 1
-            elif self.position.x < self.target.x:
-                new_x += 1
-
-            if self.position.y > self.target.y:
-                new_y -= 1
-            elif self.position.y < self.target.y:
-                new_y += 1
-            self.position = Point(new_x, new_y)
-            self.canvas.move(self.oval, new_x, new_y)
-    
-        
-        print(f'{self.position}')
+        new_direction = self.getTargetDir()
+        if np.all(self.target != self.position):
+            new_x = np.round(new_direction[0]).astype(int)
+            new_y = np.round(new_direction[1]).astype(int)
+            self.position = np.array([self.position[0] + new_x, self.position[1]+new_y])
+            self.canvas.move(self.oval, new_x, new_y)     
