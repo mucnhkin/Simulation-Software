@@ -406,7 +406,7 @@ class UUVModel(mesa.Model):
                     print(f"CUUV collision check error: {e}")
             
     def create_initial_agent_pop(self):
-         """Create the intial populations for the model use only once"""
+         """Create the intial populations for the model"""
          for agent_type in self.all_agent_types:
             tmp_pos_list = self.population_position[agent_type]
             tmp_pop_count = self.population_count[agent_type]

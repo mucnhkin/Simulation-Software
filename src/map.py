@@ -24,10 +24,6 @@ from shapely.geometry import Point, shape, MultiPoint, Polygon
 import os
 from shapely.ops import triangulate, unary_union
 
-
-
-
-
 class MapControl():
 
     def __init__(self, canvas, shallow_color =None, deep_color = None, shape_path = None):
