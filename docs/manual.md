@@ -34,8 +34,6 @@ This section covers where and how to get the mapping data for your simulations. 
 
 9. A download will appear and unzip the folder
 
-### GIS Example
-
 ## Simulation Software
 This section covers how to use simulation software.
 >[!NOTE]
@@ -63,6 +61,3 @@ This section covers how to use simulation software.
 10. Close the pop-up window.
 11. Select "Choose Grid" next to Config Options to select the viable spawn locations for the detecting UUV agents used by the genetic algorithm.
 12. Navigate to the Simulation Options and click "Start" to begin.
-
-### Simulation Example
-insert example
