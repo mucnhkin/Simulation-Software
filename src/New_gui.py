@@ -1239,7 +1239,7 @@ class AgentInfoWindow(tk.Toplevel):
         '''Close the popup'''
         self.parent.popup_window = None
         self.destroy()
-    ...
+    
 
 # UAV Select Window, window that pops up when adding agents (via open_popup() method), implemented 
 # as its own class for easier implementation of specific functionality
