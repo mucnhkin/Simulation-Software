@@ -57,8 +57,9 @@ class App(tk.Tk):
         self.is_running = False
         self.animation_job = None
         self.can_spawn = False
-        self.cell_count = 50
-
+        # Make sure its devisible by 700 (bc 700 was used a canvas size)
+        self.cell_count = 70
+        
         # varibles for selection
         self.mouse_start_x = 0
         self.mouse_start_y = 0
@@ -544,6 +545,7 @@ class App(tk.Tk):
     #Method for creating the map
     def create_map(self):
         '''command for map/grid creation'''
+    
         self.current_map = MapControl(
             shape_path=self.map_file_path,
             canvas=self.canvas,
@@ -775,14 +777,25 @@ class App(tk.Tk):
         '''updates the hover info and shows the current selected grid'''
         if self.map_grid is None:
             return
+        
         grid_size = self.map_grid.cell_size
+
         snapped_x = round(event.x / grid_size)
         snapped_y = round(event.y / grid_size)
+
+        max_index = self.map_grid.cells_n - 1
+        snapped_x = max(0, min(snapped_x, max_index))
+        snapped_y = max(0, min(snapped_y, max_index))
+
+        pixel_x = snapped_x * grid_size
+        pixel_y = snapped_y * grid_size
+
         if self.current_map is not None and hasattr(self.current_map, "canvas_to_latlon"):
-            lat, lon = self.current_map.canvas_to_latlon(snapped_y * grid_size, snapped_x * grid_size)
+            lat, lon = self.current_map.canvas_to_latlon(pixel_y, pixel_x)
             self.coord_label.config(text=f"Grid Position: ({snapped_x}, {snapped_y}) | [{lat:.3f}, {lon:.3f}]")
         else:
             self.coord_label.config(text="Grid Position: (x, y) | [lat, lon]")
+
         self.canvas.delete("hover_rect")
         x1 = snapped_x * grid_size - grid_size / 2
         y1 = snapped_y * grid_size - grid_size / 2
@@ -912,19 +925,21 @@ class FileMenu(tk.Frame):
 class CanvasFrame(tk.Frame):
     '''controls the frame canvas that the simulation runs in'''
     def __init__(self, parent, size):
-        super().__init__(parent, background="#333333", width=size[0], height=size[1], relief="raised", border=5)
+        super().__init__(parent, background="#333333", width=size[0] + 10, height=size[1] + 10, relief="raised", border=5)
         self.padding = 5
         self.parent = parent
         self.width = size[0]
         self.height = size[1]
         self.pack(side='left', padx=self.padding, pady=self.padding)
         self.pack_propagate(False)
+        self.grid_propagate(False)
 
 # Canvas Map, the actual canvas that is drawn on for the simulation
 class CanvasMap(tk.Canvas):
     '''Handles the physcal canvas to draw on for simulation'''
     def __init__(self, parent, size):
-        super().__init__(background="#040404", master=parent, width=size[0], height=size[1])
+        super().__init__(background="#040404", master=parent, width=size[0], height=size[1],
+                         highlightthickness=0, bd=0)
         self.pack()
         self.parent = parent
         self.pack_propagate(False)
