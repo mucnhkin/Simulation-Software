@@ -39,12 +39,6 @@ class Grid:
         # Create the grid
         self.draw_test_grid()
 
-    def get_cell_spacing(self, length):
-        """
-        returns the cell spacing for the grid
-        """
-        return length // self.cells_n 
-    
     def draw_test_grid(self):
         """Creates the grid"""
         radius = 1
