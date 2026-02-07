@@ -57,8 +57,8 @@ class App(tk.Tk):
         self.is_running = False
         self.animation_job = None
         self.can_spawn = False
-        # Make sure its devisible by 700 (bc 700 was used a canvas size)
-        self.cell_count = 70
+        # Make sure its devisible by 700 (bc 700x700 was used as canvas size)
+        self.cell_count = 100
         
         # varibles for selection
         self.mouse_start_x = 0
@@ -1375,7 +1375,7 @@ class UAVSelectWindow(tk.Toplevel):
         if self.parent.is_inside_map(event.x, event.y) is False:
             print("DEBUG- ADD CHECK TO DETERMINE IF CAN SPAWN ON LAND FOR CERTAIN AGENTS")
             return
-        
+
         # Snap our cursor to the grid and then apply this position to a variable "grid_pos"
         snap_x, snap_y, grid_x, grid_y = self.parent.snap_to_grid(event.x, event.y)
         grid_pos = (grid_x, grid_y)
