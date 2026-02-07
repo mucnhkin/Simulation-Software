@@ -40,12 +40,7 @@ class Grid:
         """
         returns the cell spacing for the grid
         """
-        width = 1
-        total_obj_width = self.cells_n * width
-        remaining_space = length - total_obj_width
-        num_of_spaces = self.cells_n - 1
-        individual_spaces = remaining_space // num_of_spaces
-        return individual_spaces
+        return length // self.cells_n 
     
     def draw_test_grid(self):
         """Creates the grid"""
