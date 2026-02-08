@@ -133,7 +133,7 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
         #print(spawn, " Debugging spawn")
 
     #Method used to get the direction to the target
-    def getTargetDir(self):
+    def getTargetDir(self) -> list:
         #Grab target position
         target_x = self.next_target.pos_x
         target_y = self.next_target.pos_y
@@ -144,7 +144,7 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
         new_y = target_y - self.position[1]
         new_vector = np.array([new_x, new_y])
         magnitude = np.linalg.norm(new_vector)
-        unit_vector =0
+        unit_vector = 0
 
         #get the next depth
         # current_depth = self.map.depth_loc(x=self.position[0], y=self.position[1])
@@ -225,19 +225,34 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
         new_dest = [target_grid_row, target_grid_col]
         
         # Update if target moved OR if next_target is invalid
+        # Update if target moved OR if next_target is invalid
         if self.dest != new_dest or not hasattr(self, 'next_target') or self.next_target is None:
             old_dest = self.dest
             self.dest = new_dest
             
-            # UPDATE next_target to point to the new destination cell
-            try:
-                self.next_target = self.grid[new_dest[0]][new_dest[1]]
-                print(f"Updated next_target to grid[{new_dest[0]}][{new_dest[1]}]: pos=({self.next_target.pos_x}, {self.next_target.pos_y})")
-            except Exception as e:
-                print(f"ERROR: Could not update next_target: {e}")
-                return
+            # ✅ Calculate current grid position
+            current_grid_col = int(self.position[0] / self.cell_size)
+            current_grid_row = int(self.position[1] / self.cell_size)
+            current_grid_col = max(0, min(current_grid_col, self.COL - 1))
+            current_grid_row = max(0, min(current_grid_row, self.ROW - 1))
             
-            # In the future, if targets can move, show where it moved to
+            # ✅ Update spawn to current position
+            self.spawn = [current_grid_col, current_grid_row]
+            
+            # ✅ Recalculate A* path
+            print(f"Agent {self.unique_id}: Recalculating path from {self.spawn} to {self.dest}")
+            self.a_star_search()
+            
+            # ✅ Use FIRST WAYPOINT from path, not final destination
+            if self.path and len(self.path) > 0:
+                tmp = self.path[0]
+                self.next_target = self.grid[tmp[0]][tmp[1]]  # ← Waypoint, not destination!
+                print(f"  Following path with {len(self.path)} waypoints")
+            else:
+                # No path found
+                self.next_target = self.grid[new_dest[0]][new_dest[1]]
+                print(f"  WARNING: No path found!")
+            
             if self.dest != old_dest:
                 print(f"Target moved from {old_dest} to {self.dest}")
         
@@ -285,19 +300,23 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
     """
     #A star search algorithm
     def a_star_search(self):
-        """A* seach algorithum"""
-                # Check if the source and destination are valid
-        if not self.is_valid(self.spawn[0], self.spawn[1]) or not self.is_valid(self.dest[0], self.dest[1]):
+        """A* search algorithm"""
+        # FIX: self.spawn is [col, row] but A* needs [row, col]
+        start_row = self.spawn[1]
+        start_col = self.spawn[0]
+
+        # Check if the source and destination are valid
+        if not self.is_valid(start_row, start_col) or not self.is_valid(self.dest[0], self.dest[1]):
             print("Source or destination is invalid")
             return
 
         # Check if the source and destination are unblocked
-        if not self.is_unblocked(self.spawn[0], self.spawn[1]) or not self.is_unblocked(self.dest[0], self.dest[1]):
+        if not self.is_unblocked(start_row, start_col) or not self.is_unblocked(self.dest[0], self.dest[1]):
             print("Source or the destination is blocked")
             return
 
         # Check if we are already at the destination
-        if self.is_destination(self.spawn[0], self.spawn[1]):
+        if self.is_destination(start_row, start_col):
             print("We are already at the destination")
             return
 
@@ -306,23 +325,23 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
         # Initialize the details of each cell
         cell_details = [[Cell(id=0) for _ in range(self.COL)] for _ in range(self.ROW)]
 
-        # Initialize the start cell details
-        i = self.spawn[0]
-        j = self.spawn[1]
+        # Initialize the start cell details using corrected [row, col]
+        i = start_row
+        j = start_col
         cell_details[i][j].f = 0
         cell_details[i][j].g = 0
         cell_details[i][j].h = 0
         cell_details[i][j].parent_row_i = i
         cell_details[i][j].parent_col_j = j
 
-        # # Initialize the open list (cells to be visited) with the start cell
+        # Initialize the open list (cells to be visited) with the start cell
         open_list = []
         heapq.heappush(open_list, (0.0, i, j))
 
-        # # Initialize the flag for whether destination is found
+        # Initialize the flag for whether destination is found
         found_dest = False
 
-        # # Main loop of A* search algorithm
+        # Main loop of A* search algorithm
         while len(open_list) > 0:
             # Pop the cell with the smallest f value from the open list
             p = heapq.heappop(open_list)
@@ -369,7 +388,7 @@ class UUVAgent(mesa.Agent):                         #AS OF 11/14/25 Mike has add
 
         # If the destination is not found after visiting all cells
         if not found_dest:
-            self.path = [0, 0]
+            self.path = []
             print("Failed to find the destination cell")
 
     #Helper function of the A* algorithm to trace the movement

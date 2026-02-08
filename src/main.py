@@ -25,7 +25,7 @@ def main():
     # setup globals
     CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
     PARENT_DIR = os.path.dirname(CURRENT_PATH)
-    app = App('simulation', (1100,850), PARENT_DIR)
+    app = App('simulation', (1100,800), PARENT_DIR)
      
 if __name__ == "__main__":
     main()

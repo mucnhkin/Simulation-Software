@@ -47,7 +47,7 @@ class UUVModel(mesa.Model):
         "defender" : ('target',"detector", "CUUV",)
     }
 
-    # Genetic Algorithm parameters
+    # Genetic Algorithm parameters (Genetic Algorithm)
     POP_SIZE = 10
     GENERATIONS = 50
     MUTATION_RATE = 0.5
