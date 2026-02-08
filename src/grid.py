@@ -99,6 +99,7 @@ class Grid:
             
             self.grid.append(tmp)
         
+    # Whats the point of this? Me confusion...
     def get_locations(self, start, end):
         self.grid
         def find_cell(pos, cells):
