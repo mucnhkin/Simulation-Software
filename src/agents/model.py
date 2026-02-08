@@ -274,8 +274,6 @@ class UUVModel(mesa.Model):
         1. Attackers reaching targets (sets target.status = False)
         2. CUUVs reaching attacker agents (sets attacker.status = False)
         """
-        import numpy as np
-        
         target_class = self.AGENT_MAP.get("target")
         cuuv_class = self.AGENT_MAP.get("CUUV")
         
