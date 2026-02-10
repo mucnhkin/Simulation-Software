@@ -1371,13 +1371,25 @@ class UAVSelectWindow(tk.Toplevel):
         if not self.spawning_state.get():
             print("NOT IN SPAWNING STATE-debug")
             return
-        #Checks if we are inside the map, if not, then we cant spawn (for now, perhaps specialized land agents will be added)
+        # Snap our cursor to the grid first
+        snap_x, snap_y, grid_x, grid_y = self.parent.snap_to_grid(event.x, event.y)
+
+        # Check if inside map (basic canvas check)
         if self.parent.is_inside_map(event.x, event.y) is False:
             print("DEBUG- ADD CHECK TO DETERMINE IF CAN SPAWN ON LAND FOR CERTAIN AGENTS")
             return
 
-        # Snap our cursor to the grid and then apply this position to a variable "grid_pos"
-        snap_x, snap_y, grid_x, grid_y = self.parent.snap_to_grid(event.x, event.y)
+        # Check the actual grid cell — the grid uses 5-point majority voting,
+        # so this is the authoritative land/water classification
+        if self.parent.map_grid is not None:
+            try:
+                cell = self.parent.map_grid.grid[grid_y][grid_x]
+                if cell.id == 1:  # 1 = land, 0 = water
+                    print(f"Cannot spawn on land cell ({grid_x}, {grid_y})")
+                    return
+            except IndexError:
+                print(f"Spawn position ({grid_x}, {grid_y}) out of grid bounds")
+                return
         grid_pos = (grid_x, grid_y)
 
         # Grab the agent type from the selected agent type (from the dropdown)
