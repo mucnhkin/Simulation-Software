@@ -173,7 +173,7 @@ class ConfigManager:
         return normalized, warnings
     
     # Save function that is used to save the "spawns" dict to the json
-    def save(self, spawns: dict, path: Optional[str | Path] = None, validate: bool = True) -> Tuple[Path, List[str]]:
+    def save(self, spawns: dict, path: Optional[str | Path] = None, validate: bool = True, map_file_path: str = None) -> Tuple[Path, List[str]]:
         """
         Save `spawns` to JSON on disk.
 
@@ -215,11 +215,23 @@ class ConfigManager:
             except Exception as e:
                 raise ValueError(f"Validation failed: {e}") from e
 
+        # Strip map_file_path so that it will work on every project
+        # ex: C:/Users/Daniel/Desktop/Research/Simulation-Software/data/shape_files/Harbour_Depth_Area.shp -> data/shape_files/Harbour_Depth_Area.shp
+        relative_map_path = ""
+        if len(map_file_path) > 0:
+            marker = "Simulation-Software/"
+            idx = map_file_path.find(marker)
+            if idx != -1:
+                relative_map_path = map_file_path[idx + len(marker):]
+            else:
+                relative_map_path = map_file_path
+ 
         # Build payload
         payload = {
             "schema_version": self.schema_version,
             "created_at": datetime.utcnow().isoformat() + "Z",
             "generator": "ConfigManager",
+            "map_file": relative_map_path,
             "spawns": normalized_spawns,
         }
 
@@ -269,6 +281,7 @@ class ConfigManager:
             "created_at": payload.get("created_at"),
             "generator": payload.get("generator"),
             "loaded_from": str(p),
+            "map_file_path": payload.get("map_file")
         }
 
         raw_spawns = payload.get("spawns")

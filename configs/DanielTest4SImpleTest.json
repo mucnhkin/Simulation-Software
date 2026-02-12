@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-02-12T02:54:27.178935Z",
+  "generator": "ConfigManager",
+  "map_file": "data/shape_files/Harbour_Depth_Area.shp",
+  "spawns": {
+    "attacker": [
+      {
+        "type": "seeker",
+        "pos": [
+          84,
+          58
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13436
+      }
+    ],
+    "defender": [
+      {
+        "type": "target",
+        "pos": [
+          17,
+          65
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 13384
+      }
+    ]
+  }
+}

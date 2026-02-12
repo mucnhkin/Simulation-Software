@@ -1,0 +1,806 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-02-12T02:49:38.991559Z",
+  "generator": "ConfigManager",
+  "map_file": "data/shape_files/Harbour_Depth_Area.shp",
+  "spawns": {
+    "attacker": [
+      {
+        "type": "seeker",
+        "pos": [
+          92,
+          55
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13152
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          87,
+          55
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13170
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          83,
+          59
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13182
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          86,
+          60
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13195
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          90,
+          59
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13207
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          90,
+          58
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13215
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          87,
+          58
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13217
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          95,
+          52
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13239
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          90,
+          52
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13256
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          89,
+          52
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13264
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          91,
+          54
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13274
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          91,
+          53
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13284
+      },
+      {
+        "type": "seeker",
+        "pos": [
+          90,
+          55
+        ],
+        "name": "seeker",
+        "color": "#FD0202",
+        "marker_id": 13294
+      }
+    ],
+    "defender": [
+      {
+        "type": "target",
+        "pos": [
+          22,
+          39
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14021
+      },
+      {
+        "type": "target",
+        "pos": [
+          22,
+          39
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14022
+      },
+      {
+        "type": "target",
+        "pos": [
+          22,
+          39
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14023
+      },
+      {
+        "type": "target",
+        "pos": [
+          27,
+          27
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14101
+      },
+      {
+        "type": "target",
+        "pos": [
+          27,
+          27
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14102
+      },
+      {
+        "type": "target",
+        "pos": [
+          27,
+          27
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14103
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          29
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14128
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          29
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14129
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          29
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14130
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          34
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14147
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          34
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14148
+      },
+      {
+        "type": "target",
+        "pos": [
+          21,
+          34
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14149
+      },
+      {
+        "type": "target",
+        "pos": [
+          31,
+          31
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14197
+      },
+      {
+        "type": "target",
+        "pos": [
+          31,
+          31
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14198
+      },
+      {
+        "type": "target",
+        "pos": [
+          31,
+          31
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14199
+      },
+      {
+        "type": "target",
+        "pos": [
+          32,
+          23
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14233
+      },
+      {
+        "type": "target",
+        "pos": [
+          32,
+          23
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14234
+      },
+      {
+        "type": "target",
+        "pos": [
+          32,
+          23
+        ],
+        "name": "target",
+        "color": "#020EFD",
+        "marker_id": 14235
+      },
+      {
+        "type": "detector",
+        "pos": [
+          51,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13499,
+        "radius_id": 13500
+      },
+      {
+        "type": "detector",
+        "pos": [
+          51,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13501,
+        "radius_id": 13502
+      },
+      {
+        "type": "detector",
+        "pos": [
+          54,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13513,
+        "radius_id": 13514
+      },
+      {
+        "type": "detector",
+        "pos": [
+          54,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13515,
+        "radius_id": 13516
+      },
+      {
+        "type": "detector",
+        "pos": [
+          57,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13526,
+        "radius_id": 13527
+      },
+      {
+        "type": "detector",
+        "pos": [
+          57,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13528,
+        "radius_id": 13529
+      },
+      {
+        "type": "detector",
+        "pos": [
+          60,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13540,
+        "radius_id": 13541
+      },
+      {
+        "type": "detector",
+        "pos": [
+          60,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13542,
+        "radius_id": 13543
+      },
+      {
+        "type": "detector",
+        "pos": [
+          66,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13555,
+        "radius_id": 13556
+      },
+      {
+        "type": "detector",
+        "pos": [
+          66,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13557,
+        "radius_id": 13558
+      },
+      {
+        "type": "detector",
+        "pos": [
+          68,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13565,
+        "radius_id": 13566
+      },
+      {
+        "type": "detector",
+        "pos": [
+          68,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13567,
+        "radius_id": 13568
+      },
+      {
+        "type": "detector",
+        "pos": [
+          73,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13582,
+        "radius_id": 13583
+      },
+      {
+        "type": "detector",
+        "pos": [
+          73,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13584,
+        "radius_id": 13585
+      },
+      {
+        "type": "detector",
+        "pos": [
+          71,
+          66
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13595,
+        "radius_id": 13596
+      },
+      {
+        "type": "detector",
+        "pos": [
+          71,
+          66
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13597,
+        "radius_id": 13598
+      },
+      {
+        "type": "detector",
+        "pos": [
+          67,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13606,
+        "radius_id": 13607
+      },
+      {
+        "type": "detector",
+        "pos": [
+          67,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13608,
+        "radius_id": 13609
+      },
+      {
+        "type": "detector",
+        "pos": [
+          61,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13627,
+        "radius_id": 13628
+      },
+      {
+        "type": "detector",
+        "pos": [
+          61,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13629,
+        "radius_id": 13630
+      },
+      {
+        "type": "detector",
+        "pos": [
+          59,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13639,
+        "radius_id": 13640
+      },
+      {
+        "type": "detector",
+        "pos": [
+          59,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13641,
+        "radius_id": 13642
+      },
+      {
+        "type": "detector",
+        "pos": [
+          57,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13650,
+        "radius_id": 13651
+      },
+      {
+        "type": "detector",
+        "pos": [
+          57,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13652,
+        "radius_id": 13653
+      },
+      {
+        "type": "detector",
+        "pos": [
+          55,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13663,
+        "radius_id": 13664
+      },
+      {
+        "type": "detector",
+        "pos": [
+          55,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13665,
+        "radius_id": 13666
+      },
+      {
+        "type": "detector",
+        "pos": [
+          53,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13674,
+        "radius_id": 13675
+      },
+      {
+        "type": "detector",
+        "pos": [
+          53,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13676,
+        "radius_id": 13677
+      },
+      {
+        "type": "detector",
+        "pos": [
+          50,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13690,
+        "radius_id": 13691
+      },
+      {
+        "type": "detector",
+        "pos": [
+          50,
+          67
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13692,
+        "radius_id": 13693
+      },
+      {
+        "type": "detector",
+        "pos": [
+          49,
+          66
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13712,
+        "radius_id": 13713
+      },
+      {
+        "type": "detector",
+        "pos": [
+          49,
+          66
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13714,
+        "radius_id": 13715
+      },
+      {
+        "type": "detector",
+        "pos": [
+          55,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13742,
+        "radius_id": 13743
+      },
+      {
+        "type": "detector",
+        "pos": [
+          55,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13744,
+        "radius_id": 13745
+      },
+      {
+        "type": "detector",
+        "pos": [
+          58,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13757,
+        "radius_id": 13758
+      },
+      {
+        "type": "detector",
+        "pos": [
+          58,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13759,
+        "radius_id": 13760
+      },
+      {
+        "type": "detector",
+        "pos": [
+          62,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13761,
+        "radius_id": 13762
+      },
+      {
+        "type": "detector",
+        "pos": [
+          62,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13763,
+        "radius_id": 13764
+      },
+      {
+        "type": "detector",
+        "pos": [
+          63,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13769,
+        "radius_id": 13770
+      },
+      {
+        "type": "detector",
+        "pos": [
+          63,
+          63
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13771,
+        "radius_id": 13772
+      },
+      {
+        "type": "detector",
+        "pos": [
+          64,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13780,
+        "radius_id": 13781
+      },
+      {
+        "type": "detector",
+        "pos": [
+          64,
+          64
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13782,
+        "radius_id": 13783
+      },
+      {
+        "type": "detector",
+        "pos": [
+          64,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13791,
+        "radius_id": 13792
+      },
+      {
+        "type": "detector",
+        "pos": [
+          64,
+          65
+        ],
+        "name": "detector",
+        "color": "#FFFFFF",
+        "marker_id": 13793,
+        "radius_id": 13794
+      }
+    ]
+  }
+}

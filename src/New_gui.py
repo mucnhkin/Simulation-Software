@@ -59,6 +59,7 @@ class App(tk.Tk):
         self.can_spawn = False
         # Make sure its devisible by 700 (bc 700x700 was used as canvas size)
         self.cell_count = 100
+        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         
         # varibles for selection
         self.mouse_start_x = 0
@@ -408,7 +409,7 @@ class App(tk.Tk):
 
         # Save via ConfigManager
         try:
-            saved_path, warnings = self.config_manager.save(spawns, path=Path(file_path))
+            saved_path, warnings = self.config_manager.save(spawns, path=Path(file_path), map_file_path=self.map_file_path)
         except FileExistsError as fe:
             mb.showerror("Save error", str(fe))
             return
@@ -424,25 +425,60 @@ class App(tk.Tk):
             mb.showinfo("Config saved", f"Config saved to {saved_path}")
   
     def load_config_dialog(self):
+        """
+            Load a config from a saved config.json file. The idea here is we want first to retreieve the map file hence the step 1.
+            Step 1 loads in the raw data without validation to get the location of the map.
+            Step 2 loads the map. This is dont to avoid any warnigs
+            Step 3 build vlaidaotr and use prev logic that was used
+        """
         file_path = fd.askopenfilename(title="Load spawn config", defaultextension=".json", filetypes=[("JSON", "*.json")])
         if not file_path:
             return
 
-        validator = self.make_grid_validator()
         cm = self.config_manager
+
+        # Step 1: Load raw data WITHOUT validation first
         try:
-            spawns, warnings, meta = cm.load(file_path, validate_fn=validator, remove_invalid=True)
+            spawns, warnings, meta = cm.load(file_path, validate_fn=None, remove_invalid=True)
         except Exception as e:
             mb.showerror("Load error", f"Failed to load config: {e}")
             return
 
-        # present warnings and proceed
-        if warnings:
-            proceed = mb.askyesno("Load warnings", "Some entries were invalid or changed:\n\n" + "\n".join(warnings) + "\n\nProceed and import valid entries?")
+        # Step 2: Auto-load the map if not already loaded
+        map_rel = meta.get("map_file_path")
+        if map_rel and self.map_grid is None:
+            project_root = self.base_dir
+            map_abs = os.path.join(project_root, map_rel)
+            if os.path.exists(map_abs):
+                self.map_file_path = map_abs
+                self.create_map()
+            else:
+                mb.showwarning("Map not found", f"Could not find map file:\n{map_abs}\n\nPlease load the map manually first.")
+                return
+
+        # Step 3: NOW build the validator (grid exists) and validate spawns
+        validator = self.make_grid_validator()
+        validated_spawns = {}
+        validation_warnings = []
+        for category, entries in spawns.items():
+            kept = []
+            for idx, entry in enumerate(entries):
+                ok, msg = validator(entry)
+                if ok:
+                    kept.append(entry)
+                else:
+                    validation_warnings.append(f"{category}[{idx}]: {msg}; entry removed")
+            if kept:
+                validated_spawns[category] = kept
+
+        all_warnings = warnings + validation_warnings
+
+        if all_warnings:
+            proceed = mb.askyesno("Load warnings", "Some entries were invalid or changed:\n\n" + "\n".join(all_warnings) + "\n\nProceed and import valid entries?")
             if not proceed:
                 return
 
-        applied = self.apply_loaded_spawns(spawns, wipe_existing=True)
+        applied = self.apply_loaded_spawns(validated_spawns, wipe_existing=True)
         if applied:
             mb.showinfo("Load complete", "Configuration applied to map.")
         else:
