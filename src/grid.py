@@ -23,63 +23,83 @@ from cell import Cell
 from map import MapControl
 
 class Grid:
-
+    # passing from New_gui.py: 
+    # width=self.canvas_size[0] -> 700, height=self.canvas_size[1] -> 700, cells_n=self.cell_count, canvas=self.canvas
     def __init__(self, width, height, cells_n, canvas):
+        # Number of pixels from beginig to end (width)
         self.width = width
+        # Number of pixels from beginig to end (height)
         self.height = height
         self.cells_n = cells_n
         self.grid = []
         self.canvas = canvas
+        # Still didnt figure why we need this
         self.img_tk = None
-        self.row_space = self.get_cell_spacing(self.width)  #rows involve width
-        self.col_space = self.get_cell_spacing(self.height) #cols involve hieght
-        self.cell_size = self.row_space
+        
+        # Calculate spacing (for divisible cell counts, this is exact)
+        # Amount of cells that fit in a column
+        self.col_space = self.width / self.cells_n 
+        # Amount of cells that fit in a row
+        self.row_space = self.height / self.cells_n
+        self.cell_size = self.width // self.cells_n  # Simple for divisible counts
+        
+        # Create the grid
         self.draw_test_grid()
 
-    def get_cell_spacing(self, length):
-        """
-        returns the cell spacing for the grid
-        """
-        width = 1
-        total_obj_width = self.cells_n * width
-        remaining_space = length - total_obj_width
-        num_of_spaces = self.cells_n - 1
-        individual_spaces = remaining_space // num_of_spaces
-        return individual_spaces
-    
     def draw_test_grid(self):
         """Creates the grid"""
-        pos_x = 0
-        pos_y = 0
         radius = 1
-        for row in range(self.cells_n): # iterate down the screen
-            tmp = []
-            is_water = False
-            for col in range(self.cells_n): # iterate across the screen
-                ovrlap_obj = self.canvas.find_overlapping(pos_x, pos_y, pos_x, pos_y)
-                target_ojb = self.canvas.find_withtag("map")
-                for id in ovrlap_obj:
-                    if id in target_ojb:
-                        is_water = True
-                        break                       
-                if is_water:
-                    cell = Cell(id=0)
-                    cell.pos_x = pos_x
-                    cell.pos_y = pos_y
-                    cell.row = row
-                    cell.col = col
-                    self.canvas.create_oval(pos_x-radius, pos_y-radius, pos_x+radius, pos_y+radius, fill='white', tags='cell')
-                else:
-                    cell = Cell(id=1)
-                    self.canvas.create_oval(pos_x-radius, pos_y-radius, pos_x+radius, pos_y+radius, fill='red', tags='cell')
-                tmp.append(cell)
-                pos_x += self.col_space
-                is_water = False
-
-            self.grid.append(tmp)
-            pos_y += self.row_space
-            pos_x = 0
         
+        for row in range(self.cells_n):
+            tmp = []
+            
+            for col in range(self.cells_n):
+                # Calculate position from index
+                pos_x = int(col * self.col_space)
+                pos_y = int(row * self.row_space)
+                
+                # 5 points of a cell. This will be used to validate if a cell is water or land.
+                check_points = [
+                    (pos_x, pos_y),  # Top-left
+                    (pos_x + int(self.col_space), pos_y),  # Top-right
+                    (pos_x, pos_y + int(self.row_space)),  # Bottom-left
+                    (pos_x + int(self.col_space), pos_y + int(self.row_space)),  # Bottom-right
+                    (pos_x + int(self.col_space/2), pos_y + int(self.row_space/2))  # Center
+                ]
+
+                target_ojb = self.canvas.find_withtag("map")
+                water_count = 0
+
+                # This for loop takes each point in a cell and determins if its water or land
+                for px, py in check_points:
+                    overlap_obj = self.canvas.find_overlapping(px, py, px, py)
+                    if any(id in target_ojb for id in overlap_obj):
+                        water_count += 1
+                
+                # If atleast 3 pixels were specified as water then cell is a water cell
+                is_water = (water_count >= 3)
+                
+                # Create cell
+                cell = Cell(id=0 if is_water else 1)
+                cell.pos_x = pos_x
+                cell.pos_y = pos_y
+                cell.row = row
+                cell.col = col
+                
+                # Draw dot
+                self.canvas.create_oval(
+                    pos_x - radius, pos_y - radius,
+                    pos_x + radius, pos_y + radius,
+                    fill='white' if is_water else 'red',
+                    tags='cell'
+                )
+                
+                tmp.append(cell)
+                print(cell.id)
+            
+            self.grid.append(tmp)
+        
+    # Whats the point of this? Me confusion...
     def get_locations(self, start, end):
         self.grid
         def find_cell(pos, cells):

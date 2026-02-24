@@ -2,6 +2,7 @@
 env/
 venv/
 .env/
+myenv/
 
 # Ignore compiled Python files
 __pycache__/

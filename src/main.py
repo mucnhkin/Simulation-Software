@@ -19,7 +19,7 @@
 from agents.model import UUVModel
 import map
 import os
-from New_gui import App
+from main_app import App
 
 def main():
     # setup globals
